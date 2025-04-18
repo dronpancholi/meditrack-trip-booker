@@ -15,7 +15,10 @@ export const saveTrip = async (tripData: TripData): Promise<{ success: boolean; 
     
     // Create a record with user ID and timestamps
     const recordToInsert = {
-      ...tripData,
+      patientDetails: JSON.stringify(tripData.patientDetails),
+      tripRoute: JSON.stringify(tripData.tripRoute),
+      financials: JSON.stringify(tripData.financials),
+      tripMode: tripData.tripMode,
       userId: user?.id,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),

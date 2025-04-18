@@ -61,7 +61,11 @@ const TripBookingForm = () => {
   });
 
   // Form errors with proper typing
-  const [errors, setErrors] = useState<FormErrors>({
+  const [errors, setErrors] = useState<{
+    patientDetails: Partial<Record<keyof PatientDetails, string>>;
+    tripRoute: Partial<Record<keyof TripRoute, string>>;
+    financials: Partial<Record<keyof Financials, string>>;
+  }>({
     patientDetails: {},
     tripRoute: {},
     financials: {},
