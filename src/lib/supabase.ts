@@ -2,13 +2,10 @@
 import { createClient } from '@supabase/supabase-js';
 import { toast } from 'sonner';
 import type { TripData } from '@/types/trips';
+import { supabase as integrationClient } from '@/integrations/supabase/client';
 
-// Initialize the Supabase client
-// These values should be replaced with your actual Supabase URL and anon key
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || '';
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || '';
-
-export const supabase = createClient(supabaseUrl, supabaseAnonKey);
+// Use the client from the integration file which already has the correct URL and key
+export const supabase = integrationClient;
 
 // Function to save a new trip
 export const saveTrip = async (tripData: TripData): Promise<{ success: boolean; data?: TripData; error?: any }> => {
