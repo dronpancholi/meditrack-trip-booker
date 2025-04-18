@@ -29,17 +29,26 @@ export const ConnectionIndicator = () => {
   }, []);
 
   return (
-    <div className="fixed bottom-4 right-4 flex items-center gap-2 rounded-full bg-white/90 px-4 py-2 shadow-lg backdrop-blur-sm transition-all">
-      {isSyncing ? (
-        <Loader2 className="h-4 w-4 animate-spin text-medical-blue" />
-      ) : isConnected ? (
-        <Database className="h-4 w-4 text-green-500" />
-      ) : (
-        <WifiOff className="h-4 w-4 text-red-500" />
-      )}
-      <span className="text-sm font-medium">
-        {isSyncing ? 'Syncing...' : isConnected ? 'Connected' : 'Offline'}
-      </span>
+    <div className="fixed top-0 left-0 right-0 z-50 flex items-center justify-center">
+      <div className={`
+        flex items-center gap-2 py-1 px-4 rounded-b-xl shadow-lg backdrop-blur-md transition-all duration-300
+        ${isSyncing ? 'bg-medical-blue/20' : isConnected ? 'bg-green-500/20' : 'bg-red-500/20'}
+      `}>
+        <div className="relative">
+          {isSyncing ? (
+            <Loader2 className="h-4 w-4 animate-spin text-medical-blue" />
+          ) : isConnected ? (
+            <Database className="h-4 w-4 text-green-500" />
+          ) : (
+            <WifiOff className="h-4 w-4 text-red-500" />
+          )}
+          <span className={`absolute -right-1 -bottom-1 h-2 w-2 rounded-full ${isConnected ? 'bg-green-500' : 'bg-red-500'} animate-pulse`}></span>
+        </div>
+        <span className={`text-xs font-medium transition-all duration-300
+          ${isSyncing ? 'text-medical-blue' : isConnected ? 'text-green-600' : 'text-red-600'}`}>
+          {isSyncing ? 'Syncing...' : isConnected ? 'Connected' : 'Offline'}
+        </span>
+      </div>
     </div>
   );
 };
