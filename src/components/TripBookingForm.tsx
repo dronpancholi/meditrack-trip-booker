@@ -11,6 +11,35 @@ import FinancialsSection from "./FinancialsSection";
 import TripModeSection from "./TripModeSection";
 import { toast } from "sonner";
 
+// Define explicit error types to match our form structure
+interface FormErrors {
+  patientDetails: {
+    name?: string;
+    phoneNumber?: string;
+    email?: string;
+    age?: string;
+    gender?: string;
+    condition?: string;
+  };
+  tripRoute: {
+    pickupLocation?: string;
+    dropLocation?: string;
+    hospital?: string;
+    distance?: string;
+  };
+  financials: {
+    moneyCharged?: string;
+    totalExpenses?: string;
+    expenses?: {
+      fuel?: string;
+      driver?: string;
+      nursingStaff?: string;
+      maintenance?: string;
+      miscellaneous?: string;
+    };
+  };
+}
+
 const TripBookingForm = () => {
   // Initialize form state
   const [tripData, setTripData] = useState<TripData>({
@@ -31,12 +60,8 @@ const TripBookingForm = () => {
     tripMode: "Online",
   });
 
-  // Form errors
-  const [errors, setErrors] = useState<{
-    patientDetails: Partial<Record<keyof PatientDetails, string>>;
-    tripRoute: Partial<Record<keyof TripRoute, string>>;
-    financials: Partial<Record<keyof Financials, string>>;
-  }>({
+  // Form errors with proper typing
+  const [errors, setErrors] = useState<FormErrors>({
     patientDetails: {},
     tripRoute: {},
     financials: {},
@@ -57,10 +82,10 @@ const TripBookingForm = () => {
     }));
 
     // Clear errors for updated fields
-    if (Object.keys(details).some(key => errors.patientDetails[key as keyof PatientDetails])) {
+    if (Object.keys(details).some(key => errors.patientDetails[key as keyof typeof errors.patientDetails])) {
       const updatedErrors = { ...errors };
       Object.keys(details).forEach(key => {
-        delete updatedErrors.patientDetails[key as keyof PatientDetails];
+        delete updatedErrors.patientDetails[key as keyof typeof errors.patientDetails];
       });
       setErrors(updatedErrors);
     }
@@ -77,10 +102,10 @@ const TripBookingForm = () => {
     }));
 
     // Clear errors for updated fields
-    if (Object.keys(route).some(key => errors.tripRoute[key as keyof TripRoute])) {
+    if (Object.keys(route).some(key => errors.tripRoute[key as keyof typeof errors.tripRoute])) {
       const updatedErrors = { ...errors };
       Object.keys(route).forEach(key => {
-        delete updatedErrors.tripRoute[key as keyof TripRoute];
+        delete updatedErrors.tripRoute[key as keyof typeof errors.tripRoute];
       });
       setErrors(updatedErrors);
     }
@@ -97,10 +122,10 @@ const TripBookingForm = () => {
     }));
 
     // Clear errors for updated fields
-    if (Object.keys(financials).some(key => errors.financials[key as keyof Financials])) {
+    if (Object.keys(financials).some(key => errors.financials[key as keyof typeof errors.financials])) {
       const updatedErrors = { ...errors };
       Object.keys(financials).forEach(key => {
-        delete updatedErrors.financials[key as keyof Financials];
+        delete updatedErrors.financials[key as keyof typeof errors.financials];
       });
       setErrors(updatedErrors);
     }
@@ -116,7 +141,7 @@ const TripBookingForm = () => {
 
   // Validate form
   const validateForm = (): boolean => {
-    const newErrors = {
+    const newErrors: FormErrors = {
       patientDetails: {},
       tripRoute: {},
       financials: {},
