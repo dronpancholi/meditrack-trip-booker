@@ -15,8 +15,9 @@ export const saveTrip = async (tripData: TripData): Promise<{ success: boolean; 
     
     // Create a record with user ID and timestamps
     // Map our frontend model to the database model (using lowercase column names)
+    // Convert complex objects to JSON for storage
     const recordToInsert = {
-      patientdetails: tripData.patientDetails, // Supabase expects this format for JSON columns
+      patientdetails: tripData.patientDetails,
       triproute: tripData.tripRoute,
       financials: tripData.financials,
       tripmode: tripData.tripMode,
