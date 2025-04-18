@@ -40,12 +40,19 @@ export const saveTrip = async (tripData: TripData): Promise<{ success: boolean; 
     }
 
     // Map the response data back to our frontend model
+    // Safely parse JSON strings, ensuring they are actually strings first
     const savedTrip: TripData = {
       id: data.id,
-      patientDetails: JSON.parse(data.patientdetails),
-      tripRoute: JSON.parse(data.triproute),
-      financials: JSON.parse(data.financials),
-      tripMode: data.tripmode,
+      patientDetails: typeof data.patientdetails === 'string' 
+        ? JSON.parse(data.patientdetails) 
+        : data.patientdetails,
+      tripRoute: typeof data.triproute === 'string' 
+        ? JSON.parse(data.triproute) 
+        : data.triproute,
+      financials: typeof data.financials === 'string' 
+        ? JSON.parse(data.financials) 
+        : data.financials,
+      tripMode: data.tripmode as TripMode, // Type assertion for tripMode
       userId: data.userid,
       createdAt: data.createdat,
       updatedAt: data.updatedat,
@@ -85,12 +92,19 @@ export const subscribeToTrips = (callback: (trip: TripData) => void) => {
     .channel('trips-channel')
     .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'trips' }, (payload) => {
       // Map the database model to our frontend model
+      // Safely parse JSON strings, ensuring they are actually strings first
       const tripData: TripData = {
         id: payload.new.id,
-        patientDetails: JSON.parse(payload.new.patientdetails),
-        tripRoute: JSON.parse(payload.new.triproute),
-        financials: JSON.parse(payload.new.financials),
-        tripMode: payload.new.tripmode,
+        patientDetails: typeof payload.new.patientdetails === 'string' 
+          ? JSON.parse(payload.new.patientdetails) 
+          : payload.new.patientdetails,
+        tripRoute: typeof payload.new.triproute === 'string' 
+          ? JSON.parse(payload.new.triproute) 
+          : payload.new.triproute,
+        financials: typeof payload.new.financials === 'string' 
+          ? JSON.parse(payload.new.financials) 
+          : payload.new.financials,
+        tripMode: payload.new.tripmode as TripMode, // Type assertion for tripMode
         userId: payload.new.userid,
         createdAt: payload.new.createdat,
         updatedAt: payload.new.updatedat,
