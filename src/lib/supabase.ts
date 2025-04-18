@@ -1,7 +1,7 @@
 
 import { createClient } from '@supabase/supabase-js';
 import { toast } from 'sonner';
-import type { TripData } from '@/types/trips';
+import type { TripData, TripMode } from '@/types/trips'; // Add TripMode import here
 import { supabase as integrationClient } from '@/integrations/supabase/client';
 
 // Use the client from the integration file which already has the correct URL and key
