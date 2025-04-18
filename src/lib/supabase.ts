@@ -17,9 +17,9 @@ export const saveTrip = async (tripData: TripData): Promise<{ success: boolean; 
     // Map our frontend model to the database model (using lowercase column names)
     // Convert complex objects to JSON for storage
     const recordToInsert = {
-      patientdetails: tripData.patientDetails,
-      triproute: tripData.tripRoute,
-      financials: tripData.financials,
+      patientdetails: JSON.stringify(tripData.patientDetails),
+      triproute: JSON.stringify(tripData.tripRoute),
+      financials: JSON.stringify(tripData.financials),
       tripmode: tripData.tripMode,
       userid: user?.id,
       createdat: new Date().toISOString(),
@@ -42,9 +42,9 @@ export const saveTrip = async (tripData: TripData): Promise<{ success: boolean; 
     // Map the response data back to our frontend model
     const savedTrip: TripData = {
       id: data.id,
-      patientDetails: data.patientdetails,
-      tripRoute: data.triproute,
-      financials: data.financials,
+      patientDetails: JSON.parse(data.patientdetails),
+      tripRoute: JSON.parse(data.triproute),
+      financials: JSON.parse(data.financials),
       tripMode: data.tripmode,
       userId: data.userid,
       createdAt: data.createdat,
@@ -87,9 +87,9 @@ export const subscribeToTrips = (callback: (trip: TripData) => void) => {
       // Map the database model to our frontend model
       const tripData: TripData = {
         id: payload.new.id,
-        patientDetails: payload.new.patientdetails,
-        tripRoute: payload.new.triproute,
-        financials: payload.new.financials,
+        patientDetails: JSON.parse(payload.new.patientdetails),
+        tripRoute: JSON.parse(payload.new.triproute),
+        financials: JSON.parse(payload.new.financials),
         tripMode: payload.new.tripmode,
         userId: payload.new.userid,
         createdAt: payload.new.createdat,
