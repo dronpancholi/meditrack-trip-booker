@@ -11,33 +11,11 @@ import FinancialsSection from "./FinancialsSection";
 import TripModeSection from "./TripModeSection";
 import { toast } from "sonner";
 
-// Define explicit error types to match our form structure
+// Define error types to match our form structure
 interface FormErrors {
-  patientDetails: {
-    name?: string;
-    phoneNumber?: string;
-    email?: string;
-    age?: string;
-    gender?: string;
-    condition?: string;
-  };
-  tripRoute: {
-    pickupLocation?: string;
-    dropLocation?: string;
-    hospital?: string;
-    distance?: string;
-  };
-  financials: {
-    moneyCharged?: string;
-    totalExpenses?: string;
-    expenses?: {
-      fuel?: string;
-      driver?: string;
-      nursingStaff?: string;
-      maintenance?: string;
-      miscellaneous?: string;
-    };
-  };
+  patientDetails: Partial<Record<keyof PatientDetails, string>>;
+  tripRoute: Partial<Record<keyof TripRoute, string>>;
+  financials: Partial<Record<keyof Financials, string>>;
 }
 
 const TripBookingForm = () => {
@@ -61,11 +39,7 @@ const TripBookingForm = () => {
   });
 
   // Form errors with proper typing
-  const [errors, setErrors] = useState<{
-    patientDetails: Partial<Record<keyof PatientDetails, string>>;
-    tripRoute: Partial<Record<keyof TripRoute, string>>;
-    financials: Partial<Record<keyof Financials, string>>;
-  }>({
+  const [errors, setErrors] = useState<FormErrors>({
     patientDetails: {},
     tripRoute: {},
     financials: {},

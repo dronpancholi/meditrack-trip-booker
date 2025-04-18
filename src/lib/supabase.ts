@@ -14,14 +14,15 @@ export const saveTrip = async (tripData: TripData): Promise<{ success: boolean; 
     const { data: { user } } = await supabase.auth.getUser();
     
     // Create a record with user ID and timestamps
+    // Map our frontend model to the database model (using lowercase column names)
     const recordToInsert = {
-      patientDetails: JSON.stringify(tripData.patientDetails),
-      tripRoute: JSON.stringify(tripData.tripRoute),
-      financials: JSON.stringify(tripData.financials),
-      tripMode: tripData.tripMode,
-      userId: user?.id,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
+      patientdetails: tripData.patientDetails, // Supabase expects this format for JSON columns
+      triproute: tripData.tripRoute,
+      financials: tripData.financials,
+      tripmode: tripData.tripMode,
+      userid: user?.id,
+      createdat: new Date().toISOString(),
+      updatedat: new Date().toISOString(),
     };
 
     // Insert the record into the trips table
@@ -37,8 +38,20 @@ export const saveTrip = async (tripData: TripData): Promise<{ success: boolean; 
       return { success: false, error };
     }
 
+    // Map the response data back to our frontend model
+    const savedTrip: TripData = {
+      id: data.id,
+      patientDetails: data.patientdetails,
+      tripRoute: data.triproute,
+      financials: data.financials,
+      tripMode: data.tripmode,
+      userId: data.userid,
+      createdAt: data.createdat,
+      updatedAt: data.updatedat,
+    };
+
     toast.success('Trip saved successfully');
-    return { success: true, data };
+    return { success: true, data: savedTrip };
   } catch (error) {
     console.error('Unexpected error saving trip:', error);
     toast.error('An unexpected error occurred');
@@ -70,7 +83,18 @@ export const subscribeToTrips = (callback: (trip: TripData) => void) => {
   const subscription = supabase
     .channel('trips-channel')
     .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'trips' }, (payload) => {
-      callback(payload.new as TripData);
+      // Map the database model to our frontend model
+      const tripData: TripData = {
+        id: payload.new.id,
+        patientDetails: payload.new.patientdetails,
+        tripRoute: payload.new.triproute,
+        financials: payload.new.financials,
+        tripMode: payload.new.tripmode,
+        userId: payload.new.userid,
+        createdAt: payload.new.createdat,
+        updatedAt: payload.new.updatedat,
+      };
+      callback(tripData);
     })
     .subscribe();
 
